@@ -16,15 +16,17 @@ public class ReversiGame
         System.out.print("Enter your name: ");
         String playerName = scanner.nextLine();
 
+        // Create the two players and the initial game state
         Player userPlayer = new Player(playerName);
+        Player aiPlayer = new Player("Bot", 'O');
         State initialGameState = new State(userPlayer, gameChoice);
 
-        initialGameState.setBoardAtPos(userPlayer.getSymbol(), 3, 3);
+        
 
-        initialGameState.printBoard();
+        initialGameState.printBoard(); // Print the board
 
 
 
-        scanner.close();
+        scanner.close(); // Always close your scanners!
     }
 }
