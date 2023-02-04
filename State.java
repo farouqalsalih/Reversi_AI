@@ -15,12 +15,12 @@ public class State
      * Constructor for creating the first state (an empty board)
      * Takes a player as an argument and a boardSize and creates 
      * a state representing that player's turn to move on an 
-     * empty board of that size (Defaults to player's symbol as X)
+     * empty board of that size (Remember, defaults to player's symbol as X)
      */
     public State(Player player, int boardSize)
     {
         this.player = player;
-        player.setSymbol('X');
+        
         this.boardSize = boardSize;
         if (boardSize == 4)
         {
@@ -126,7 +126,8 @@ public class State
         char columnIndex = 'a';
         System.out.print(" ");
 
-        for (int col = 0; col < this.boardSize; col++) // This prints the top row "  a b c d"
+        // This prints the top row "  a b c d"
+        for (int col = 0; col < this.boardSize; col++) 
         {
             System.out.print(" " + columnIndex);
         }
@@ -152,7 +153,8 @@ public class State
         columnIndex = 'a'; // Reset the column index to print the bottom row
         System.out.print(" ");
 
-        for (int col = 0; col < this.boardSize; col++) // This prints the bottom row "  a b c d"
+        for (int col = 0; col < this.boardSize; col++) // This prints the bottom row 
+                                                       // "  a b c d"
         {
             System.out.print(" " + columnIndex);
         } 

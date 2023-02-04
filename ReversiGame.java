@@ -19,6 +19,8 @@ public class ReversiGame
         Player userPlayer = new Player(playerName);
         State initialGameState = new State(userPlayer, gameChoice);
 
+        initialGameState.setBoardAtPos(userPlayer.getSymbol(), 3, 3);
+
         initialGameState.printBoard();
 
 
