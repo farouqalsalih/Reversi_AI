@@ -129,25 +129,25 @@ public class State
         // This prints the top row "  a b c d"
         for (int col = 0; col < this.boardSize; col++) 
         {
-            System.out.print(" " + columnIndex);
+            System.out.print(" " + columnIndex++);
         }
         System.out.println();
 
         /*
          * This for loop prints the middle part of the board
-         * 1         1
-           2   O X   2
-           3   X O   3
-           4         4
+         * 0         0
+           1   O X   1
+           2   X O   2
+           3         3
          */
         for (int row = 0; row < this.boardSize; row++)
         {
-            System.out.print(row + 1);
+            System.out.print(row);
             for (int col = 0; col < this.boardSize; col++)
             {
                 System.out.print(" " + this.board[row][col]);
             }
-            System.out.println(" " + (row + 1));
+            System.out.println(" " + (row));
         }
 
         columnIndex = 'a'; // Reset the column index to print the bottom row
@@ -156,9 +156,7 @@ public class State
         for (int col = 0; col < this.boardSize; col++) // This prints the bottom row 
                                                        // "  a b c d"
         {
-            System.out.print(" " + columnIndex);
+            System.out.print(" " + columnIndex++);
         } 
     }
-
-    
 }
