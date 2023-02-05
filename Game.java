@@ -334,7 +334,7 @@ public class Game {
     {
         ArrayList<State> actionsList = new ArrayList<State>();
 
-        if (state.getPlayer().equals(user))
+        if (!state.getPlayer().equals(user))
         {
             for (int row = 0; row < state.getBoardSize(); row++)
             {
@@ -348,21 +348,7 @@ public class Game {
                 }
             }
         }
-        else
-        {
-            for (int row = 0; row < state.getBoardSize(); row++)
-            {
-                for (int col = 0; col < state.getBoardSize(); col++)
-                {
-                    if (check(row, col, state))
-                    {
-                        actionsList.add(move(row, col, state));
-                        //there will be an error here since you're not changing the state, it will be the same copy of the state
-
-                    }
-                }
-            }
-        }
+        
 
         return actionsList;
     }
