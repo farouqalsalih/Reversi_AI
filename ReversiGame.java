@@ -21,11 +21,35 @@ public class ReversiGame
         Player aiPlayer = new Player("Bot", 'O');
         State initialGameState = new State(userPlayer, gameChoice);
 
+        Game game = new Game(userPlayer, aiPlayer, initialGameState);
+        game.playGame();
+
+        // game.currentState.printBoard();
+
+        /*System.out.print("Enter your move in row-col format like 11 to represent b1");
+        int row = Integer.parseInt(scanner.nextLine());
+        int col = Integer.parseInt(scanner.nextLine());*/
+        
+        //call playGame
+
+        // System.out.println(game.move(row, col));
+        // game.currentState.printBoard();
+
+        /*char[][] board1 = {{' ', ' ', ' ', ' '}, 
+                           {' ', 'O', 'X', ' '}, 
+                           {' ', 'X', 'O', ' '}, 
+                           {' ', ' ', ' ', ' '}};*/
+
         
 
-        initialGameState.printBoard(); // Print the board
+    
+        //initialGameState.printBoard(); // Print the board
+
+        //player plays here
 
 
         scanner.close(); // Always close your scanners!
     }
+
+    //playGame function
 }

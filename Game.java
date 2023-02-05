@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Game {
     Player user;
@@ -17,9 +19,16 @@ public class Game {
         this.currentState = currentState;
     }
 
-    public boolean check(int x, int y){
+    /*
+        Param:
+            x: Row
+            y: Col
+            currentState: game state (store's board)
+        Description:
+            Checks if a move (row, col) is possible in the game state board 
+    */
+    public boolean check(int x, int y, State currentState){
         int size = currentState.getBoardSize();
-        boolean canPlace = false;
         
         //checks if number is valid
         if(x >= size || y >= size || x < 0 || y < 0){
@@ -100,10 +109,11 @@ public class Game {
 
         isPossible = false;
 
-        for(int i = y + 1; i < size; i++){
-            if(currentState.getBoard()[x][i] == ' '){
+        int j = y + 1;
+        for(int i = x + 1; i < size && j < size; i++, j++){
+            if(currentState.getBoard()[i][j] == ' '){
                 break;
-            } else if(currentState.getBoard()[x][i] == opponent){
+            } else if(currentState.getBoard()[i][j] == opponent){
                 isPossible = true;
             } else {
                 if(isPossible){
@@ -114,7 +124,58 @@ public class Game {
             }
         }
 
-        return canPlace;
+        isPossible = false;
+
+        j = y - 1;
+        for(int i = x - 1; i >= 0 && j >= 0; i--, j--){
+            if(currentState.getBoard()[i][j] == ' '){
+                break;
+            } else if(currentState.getBoard()[i][j] == opponent){
+                isPossible = true;
+            } else {
+                if(isPossible){
+                    return true;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        isPossible = false;
+
+        j = y + 1;
+        for(int i = x - 1; i >= 0 && j < size; i--, j++){
+            if(currentState.getBoard()[i][j] == ' '){
+                break;
+            } else if(currentState.getBoard()[i][j] == opponent){
+                isPossible = true;
+            } else {
+                if(isPossible){
+                    return true;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        isPossible = false;
+
+        j = y - 1;
+        for(int i = x + 1; i < size && j >= 0; i++, j--){
+            if(currentState.getBoard()[i][j] == ' '){
+                break;
+            } else if(currentState.getBoard()[i][j] == opponent){
+                isPossible = true;
+            } else {
+                if(isPossible){
+                    return true;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return false;
     }
 
     /*
@@ -126,25 +187,79 @@ public class Game {
         Returns a boolean value if move is placed
     */
     public boolean move(int x, int y){
-        if(check(x, y)){
-            currentState.getBoard()[x][y] = currentState.getPlayer().getSymbol();
-            currentState.setPlayer(bot);
+        if(check(x, y, this.currentState)){
+            this.currentState.setBoardAtPos(this.currentState.getPlayer().getSymbol(), x, y);
+            this.currentState.setPlayer(bot);
             return true;
         }
+        //flip all the tiles
+        //AI does move
+        //flip all tiles from AI move
         
         return false;
     }
 
+    public State move(int x, int y, State state){
+        System.out.println("Here");
+        state.printBoard();
+        State returnState = new State(state.getPlayer(), state.getBoard(), state.getBoardSize());
+        returnState.printBoard();
+        if(check(x, y, returnState)){
+            returnState.setBoardAtPos(returnState.getPlayer().getSymbol(), x, y);
+            if (returnState.getPlayer().getSymbol() == 'X')
+            {
+                
+                returnState.setPlayer(bot);
+            }
+            else
+            {
+                returnState.setPlayer(user);
+            }
+            return returnState;
+        }
+        
+        return null;
+    }
+
+    /*
+     * param:
+     *     none
+     * Game loop function
+     */
+    public void playGame()
+    {
+        int row;
+        int col;
+        Scanner scanner = new Scanner(System.in);
+        
+        
+        
+        while (!terminalTest(currentState))
+        {
+            currentState.printBoard();
+            System.out.print("Enter your move in row-col format like 11 to represent b1");
+            row = Integer.parseInt(scanner.nextLine());
+            col = Integer.parseInt(scanner.nextLine());
+            move(row, col);
+            currentState.printBoard();
+            this.currentState = minimax(currentState);
+            currentState.printBoard();
+        }
+
+        System.out.println("X: " + this.currentState.getXPiecesCount() + " " + "O: " + this.currentState.getOPiecesCount());
+
+        scanner.close();
+    }
 
     /*
      * param:
      *     none
      * Checks the current state and returns true if the game is over. Otherwise returns false
      */
-    public boolean terminalTest()
+    public boolean terminalTest(State state)
     {
         // If we have a full board (total num of pieces = boardSize^2), return true
-        if (this.currentState.getTotalPieces() == (this.currentState.getBoardSize() * this.currentState.getBoardSize()))
+        if (state.getTotalPieces() == (state.getBoardSize() * state.getBoardSize()))
         {
             return true;
         }
@@ -153,11 +268,11 @@ public class Game {
          * So, we iterate through the whole board and use the check(int x, int y) method
          * on each square 
          */
-        for (int row = 0; row < this.currentState.getBoardSize(); row++)
+        for (int row = 0; row < state.getBoardSize(); row++)
         {
-            for (int col = 0; col < this.currentState.getBoardSize(); col++)
+            for (int col = 0; col < state.getBoardSize(); col++)
             {
-                if (check(row, col)) // If there is ever a valid move, return false
+                if (check(row, col, state)) // If there is ever a valid move, return false
                 {
                     return false;
                 }
@@ -184,21 +299,20 @@ public class Game {
     /*
      * param:
      *     State terminalState: This is a terminal state of the game
-     *     Player player: This is the player whose score we want to check
      * Calculates the "outcome" value of the terminal state for the player.
-     * If the player wins, returns 1
+     * If the player wins, returns -1
      * If it's a draw, returns 0
-     * If the player loses, return -1
+     * If the player loses, return 1
      */
-    public int utility(State terminalState, Player player)
+    public int utility(State terminalState)
     {
         int xCount = terminalState.getXPiecesCount();
         int oCount = terminalState.getOPiecesCount();
 
         // If the chosen player has more symbols than the other player, the chosen player wins
-        if ((player.getSymbol() == 'X' && xCount > oCount) || (player.getSymbol() == 'O' && oCount > xCount))
+        if (xCount > oCount)
         {
-            return 1;
+            return -1;
         }
         else if (xCount == oCount) // If they have the same number of symbols, it is a tie
         {
@@ -206,14 +320,124 @@ public class Game {
         }
         else // Otherwise, the chosen player has fewer symbols, and they lose
         {
-            return -1;
+            return 1;
         }
+    }
+
+
+    /*
+     * param:
+     *     State state: The state from which we are checking the next states
+     * Returns an ArrayList of all possible next states
+     */
+    public ArrayList<State> getActions (State state)
+    {
+        ArrayList<State> actionsList = new ArrayList<State>();
+
+        if (state.getPlayer().equals(user))
+        {
+            for (int row = 0; row < state.getBoardSize(); row++)
+            {
+                for (int col = 0; col < state.getBoardSize(); col++)
+                {
+                    if (check(row, col, state))
+                    {
+                        actionsList.add(move(row, col, state));
+                        //there will be an error here since you're not changing the state, it will be the same copy of the state
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (int row = 0; row < state.getBoardSize(); row++)
+            {
+                for (int col = 0; col < state.getBoardSize(); col++)
+                {
+                    if (check(row, col, state))
+                    {
+                        actionsList.add(move(row, col, state));
+                        //there will be an error here since you're not changing the state, it will be the same copy of the state
+
+                    }
+                }
+            }
+        }
+
+        return actionsList;
+    }
+
+    public State h_minimax(State state){
+        return state;
     }
 
     /*
      * param: 
      * Description
      */
-    public 
+    public State minimax(State state)
+    {
+        ArrayList<State> actionsList = getActions(state);
+        
+        int maxMoveValue = -1;
+        State aiMoveState = state;
+        for (State action : actionsList)
+        {
+            int moveValue = minimizeValue(action);
+            if (moveValue > maxMoveValue)
+            {
+                maxMoveValue = moveValue;
+                aiMoveState = action;
+            }
+        }
+        return aiMoveState;
+    }
+
+    /*
+     * param: 
+     * Description
+     */
+    public int maximizeValue(State state)
+    {
+        int maxMoveValue = Integer.MIN_VALUE;
+
+        if (terminalTest(state))
+        {
+            return utility(state);
+        }
+
+        ArrayList<State> actionsList = getActions(state);
+
+        for (State action : actionsList)
+        {
+            maxMoveValue = Integer.max(maxMoveValue, minimizeValue(action));
+        }
+        
+        return maxMoveValue;
+    }
+
+    /*
+     * param: 
+     * Description
+     */
+    public int minimizeValue(State state)
+    {
+        int minMoveValue = Integer.MAX_VALUE;
+
+        if (terminalTest(state))
+        {
+            return utility(state);
+        }
+
+        ArrayList<State> actionsList = getActions(state);
+
+        for (State action : actionsList)
+        {
+            minMoveValue = Integer.min(minMoveValue, maximizeValue(action));
+        }
+
+        return minMoveValue;
+    }
+
 
 }

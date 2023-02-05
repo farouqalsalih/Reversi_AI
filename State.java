@@ -12,6 +12,10 @@ public class State
     private int oPiecesCount;
 
 
+    // public State(State clonedState)
+    // {
+    //     this(clonedState.getPlayer(), clonedState.getBoard(), clonedState.getBoardSize());
+    // }
 
     /*
      * Constructor for creating the first state (an empty board)
@@ -46,7 +50,7 @@ public class State
     public State(Player player, char[][] board, int boardSize)
     {
         this.player = player;
-        setBoard(board);
+        this.board = board;
         this.boardSize = boardSize;
     }
 
@@ -241,5 +245,6 @@ public class State
         {
             System.out.print(" " + columnIndex++);
         } 
+        System.out.println();
     }
 }

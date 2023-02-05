@@ -9,3 +9,8 @@ Hashing optimizations?
 
 Update formatting (curly braces mainly)
   - also apply the Game.java formatting to the other classes
+
+Multithreading/GUI lol?
+
+Test a bunch of heuristics to see what works best?
+  - play ai vs ai with different heuristics to see who wins lol
