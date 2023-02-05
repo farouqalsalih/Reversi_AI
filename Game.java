@@ -258,6 +258,7 @@ public class Game {
      */
     public boolean terminalTest(State state)
     {
+        state.countPieces();
         // If we have a full board (total num of pieces = boardSize^2), return true
         if (state.getTotalPieces() == (state.getBoardSize() * state.getBoardSize()))
         {
@@ -306,6 +307,7 @@ public class Game {
      */
     public int utility(State terminalState)
     {
+        terminalState.countPieces();
         int xCount = terminalState.getXPiecesCount();
         int oCount = terminalState.getOPiecesCount();
 
@@ -342,7 +344,9 @@ public class Game {
                 {
                     if (check(row, col, state))
                     {
-                        actionsList.add(move(row, col, state));
+                        State s = new State(user, state.getBoard(), state.getBoardSize());
+                        s.setBoardAtPos('O', row, col);
+                        actionsList.add(s);
                         //there will be an error here since you're not changing the state, it will be the same copy of the state
                     }
                 }

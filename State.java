@@ -50,8 +50,15 @@ public class State
     public State(Player player, char[][] board, int boardSize)
     {
         this.player = player;
-        this.board = board;
+        this.board = new char[4][4];
         this.boardSize = boardSize;
+        for (int row = 0; row < boardSize; row++)
+        {
+            for (int col = 0; col < boardSize; col++)
+            {
+                this.board[row][col] = board[row][col];
+            }
+        }
     }
 
 
@@ -107,6 +114,7 @@ public class State
      */
     public void setBoardAtPos(char symbol, int row, int col)
     {
+        this.countPieces();
         this.board[row][col] = symbol;
     }
 
