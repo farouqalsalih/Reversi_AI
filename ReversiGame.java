@@ -26,7 +26,6 @@ public class ReversiGame
         initialGameState.printBoard(); // Print the board
 
 
-
         scanner.close(); // Always close your scanners!
     }
 }

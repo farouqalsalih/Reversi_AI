@@ -1,0 +1,11 @@
+Some things to do if we're bored at the end:
+
+Game.java: 
+  - terminalTest method make more efficient by excluding impossible moves in the check?
+
+Make interfaces such that this formal model can be adapted to other games 
+
+Hashing optimizations?
+
+Update formatting (curly braces mainly)
+  - also apply the Game.java formatting to the other classes

@@ -1,13 +1,15 @@
 public class State 
 {
     private static final char[][] EMPTY_4_BOARD = {{' ', ' ', ' ', ' '}, 
-                                                   {' ', ' ', ' ', ' '}, 
-                                                   {' ', ' ', ' ', ' '}, 
+                                                   {' ', 'O', 'X', ' '}, 
+                                                   {' ', 'X', 'O', ' '}, 
                                                    {' ', ' ', ' ', ' '}};
 
     private char[][] board;
     private Player player;
     private int boardSize;
+    private int xPiecesCount;
+    private int oPiecesCount;
 
 
 
@@ -31,6 +33,9 @@ public class State
         {
             System.out.println("You entered the wrong boardsize");
         }
+
+        this.xPiecesCount = 2;
+        this.oPiecesCount = 2;
     }
 
     /*
@@ -116,6 +121,84 @@ public class State
     public void setBoardSize(int boardSize)
     {
         this.boardSize = boardSize;
+    }
+
+    /*
+     * param:
+     *     none
+     * Returns the number of x pieces
+     */
+    public int getXPiecesCount()
+    {
+        return this.xPiecesCount;
+    }
+
+    /*
+     * param:
+     *     int xPiecesCount
+     * Sets the number of x pieces
+     */
+    public void setXPiecesCount(int xPiecesCount)
+    {
+        this.xPiecesCount = xPiecesCount;
+    }
+
+    /*
+     * param:
+     *     none
+     * Returns the number of o pieces
+     */
+    public int getOPiecesCount()
+    {
+        return this.oPiecesCount;
+    }
+
+    /* param:
+     *     int oPiecesCount
+     * Sets the number of o pieces
+     */
+    public void setOPiecesCount(int oPiecesCount)
+    {
+        this.oPiecesCount = oPiecesCount;
+    }
+
+    /*
+     * param:
+     *     none
+     * Returns the total number of both pieces on the board
+     */
+    public int getTotalPieces()
+    {
+        return this.xPiecesCount + this.oPiecesCount;
+    }
+
+    /*
+     * param:
+     *     none
+     * Goes through the board and counts the pieces for each side,
+     * setting the instance variables to the correct counts.
+     */
+    public void countPieces()
+    {
+        int xCount = 0;
+        int oCount = 0;
+        // Count the number of X's and O's in the final board
+        for (int row = 0; row < boardSize; row++)
+        {
+            for (int col = 0; col < boardSize; col++)
+            {
+                if (this.getBoardAtPos(row, col) == 'X')
+                {
+                    xCount++;
+                }
+                else if (this.getBoardAtPos(row, col) == 'O')
+                {
+                    oCount++;
+                }
+            }
+        }
+        setXPiecesCount(xCount);
+        setOPiecesCount(oCount);
     }
 
     /*
