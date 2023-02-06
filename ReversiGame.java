@@ -8,6 +8,11 @@ public class ReversiGame
         replay();
     }
 
+    /*
+     * Description:
+     * Replay the game as many times based on your game preferences
+     */
+
     public static void replay(){
         Scanner scanner = new Scanner(System.in);
         while(true){

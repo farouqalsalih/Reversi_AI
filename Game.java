@@ -82,6 +82,17 @@ public class Game {
         return functions;
     }
 
+    /*
+     * Param:
+     *  row: where you want to place and flip from
+     *  col: where you want to place and flip from
+     *  s: state to do flipping
+     *  opponent: opponent symbol
+     *  functions: the direction to flip
+     * Description:
+     *  Flips tokens
+     */
+
     public void flip(int row, int col, State s, char opponent, ArrayList<Integer> functions){
         /*
             * 0 = flipVerticalUp
@@ -318,40 +329,29 @@ public class Game {
         Returns a boolean value if move is placed
     */
     public boolean move(int x, int y){
-        //
         
         ArrayList<Integer> functions = check(x, y, this.currentState);
         if(functions.size() > 0){
             this.currentState.setBoardAtPos(this.currentState.getPlayer().getSymbol(), x, y);
             
             char opponent = this.currentState.getPlayer().getSymbol() == 'X' ? 'O' : 'X';
-            /*
-             * 0 = flipVerticalUp
-             * 1 = flipVerticalDown
-             * 2 = flipHorizontalLeft
-             * 3 = flipHorizontalRight
-             * 4 = flipDiagonalDownRight
-             * 5 = flipDiagonalDownLeft
-             * 6 = flipDiagonalUpLeft
-             * 7 = flipDiagonalUpRight
-             */
 
             flip(x, y, this.currentState, opponent, functions);
 
             return true;
         }
         
-        //flip all the tiles
-        //AI does move
-        //flip all tiles from AI move
-        
         return false;
     }
 
 
-
+    /*
+     * param:
+     *  Receives a scanner object
+     * Description:
+     *  Determines if the input is a number, and if so, returns that number
+     */
     public int checkNumber(Scanner scanner){
-        //Scanner scanner = new Scanner(System.in);
         String value = scanner.nextLine();
         int valueInt;
         while(true){
@@ -369,15 +369,14 @@ public class Game {
 
     /*
      * param:
-     *     none
+     *     scanner object
+     *     game Choice (4x4, 6x6, or 8x8)
      * Game loop function
      */
     public void playGame(Scanner scanner, int gameChoiceInt)
     {
         int row;
-        int col;
-        //Scanner scanner = new Scanner(System.in);
-        
+        int col;        
         
         currentState.printBoard();
         while (!terminalTest(currentState))
@@ -400,14 +399,15 @@ public class Game {
             {
                 this.currentState = minimax(currentState);
             }
-            else if (gameChoiceInt == 6) // Game size of 6, runs alpha beta pruning with 1000 depth
+            else if (gameChoiceInt == 6) // Game size of 6, runs alpha beta pruning with inf depth
             {
-                this.currentState = alphabeta(currentState, 1000, Float.MIN_VALUE, Float.MAX_VALUE, true).getAction();
+                this.currentState = alphabeta(currentState, Integer.MAX_VALUE, Float.MIN_VALUE, Float.MAX_VALUE, true).getAction();
             }
             else if (gameChoiceInt == 8) // Game size of 8, a/b pruning with depth 20
             {
-                this.currentState = alphabeta(currentState, 20, Float.MIN_VALUE, Float.MAX_VALUE, true).getAction();
+                this.currentState = alphabeta(currentState, 10, Float.MIN_VALUE, Float.MAX_VALUE, true).getAction();
             }
+            System.out.println();
             currentState.printBoard();
             currentState.setPlayer(user);
 
@@ -415,7 +415,6 @@ public class Game {
 
         System.out.println("Score:\n"+ "X: " + this.currentState.getXPiecesCount() + " " + "O: " + this.currentState.getOPiecesCount());
 
-        //scanner.close();
     }
 
     /*
@@ -492,7 +491,6 @@ public class Game {
         int xCount = state.getXPiecesCount();
         int oCount = state.getOPiecesCount();
         return ((float)oCount - (float)xCount) / (float)state.getTotalPieces();
- 
     }
 
     /*
@@ -504,32 +502,31 @@ public class Game {
     {
         ArrayList<State> actionsList = new ArrayList<State>();
 
-        // if (!state.getPlayer().equals(user))
-        // {
-            for (int row = 0; row < state.getBoardSize(); row++)
+        for (int row = 0; row < state.getBoardSize(); row++)
+        {
+            for (int col = 0; col < state.getBoardSize(); col++)
             {
-                for (int col = 0; col < state.getBoardSize(); col++)
+                ArrayList<Integer> functions = check(row, col, state);
+                if (functions.size() > 0)
                 {
-                    ArrayList<Integer> functions = check(row, col, state);
-                    if (functions.size() > 0)
-                    {
-                        State s = new State(bot, state.getBoard(), state.getBoardSize());
-                        s.setBoardAtPos(bot.getSymbol(), row, col);
-                        char opponent = s.getPlayer().getSymbol() == 'X' ? 'O' : 'X';
+                    State s = new State(bot, state.getBoard(), state.getBoardSize());
+                    s.setBoardAtPos(bot.getSymbol(), row, col);
+                    char opponent = s.getPlayer().getSymbol() == 'X' ? 'O' : 'X';
 
-                        flip(row, col, s, opponent, functions);
-                        // s.setPlayer(user);
-                        actionsList.add(s);
-                        //there will be an error here since you're not changing the state, it will be the same copy of the state
-                    }
+                    flip(row, col, s, opponent, functions);
+                    actionsList.add(s);
                 }
             }
-        // }
-        
+        } 
 
         return actionsList;
     }
-
+    
+    /*
+     * Param: current state, the depth, alpha, beta, and if it's the maximizingPlayer's turn
+     * Description:
+     *  Finds optimal move for AI based on depth with alpha-beta pruning and heuristic function
+     */
     public Tuple alphabeta(State state, int depth, float alpha, float beta, boolean maximizingPlayer){
         if(depth == 0 || terminalTest(state)){
             return new Tuple(heuristicFunction(state), state);
@@ -573,8 +570,9 @@ public class Game {
 
 
     /*
-     * param: 
-     * Description
+     * param: receives state
+     * Description:
+     *  Determines optimal move for AI to choose from children
      */
     public State minimax(State state)
     {
@@ -647,6 +645,4 @@ public class Game {
 
         return minMoveValue;
     }
-
-
 }
