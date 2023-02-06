@@ -377,10 +377,13 @@ public class Game {
             System.out.print("Enter your move in row-col format like 11 to represent b1");
             row = Integer.parseInt(scanner.nextLine());
             col = Integer.parseInt(scanner.nextLine());
-            move(row, col);
+            System.out.println(move(row, col));
+            currentState.setPlayer(bot);
             currentState.printBoard();
-            this.currentState = minimax(currentState);
+            this.currentState = alphabeta(currentState, 20, Integer.MIN_VALUE, Integer.MAX_VALUE, true).getAction();
             currentState.printBoard();
+            currentState.setPlayer(user);
+
         }
 
         System.out.println("X: " + this.currentState.getXPiecesCount() + " " + "O: " + this.currentState.getOPiecesCount());
@@ -473,8 +476,8 @@ public class Game {
     {
         ArrayList<State> actionsList = new ArrayList<State>();
 
-        if (!state.getPlayer().equals(user))
-        {
+        // if (!state.getPlayer().equals(user))
+        // {
             for (int row = 0; row < state.getBoardSize(); row++)
             {
                 for (int col = 0; col < state.getBoardSize(); col++)
@@ -513,21 +516,59 @@ public class Game {
                             }
                         }
 
-                        s.setPlayer(user);
+                        // s.setPlayer(user);
                         actionsList.add(s);
                         //there will be an error here since you're not changing the state, it will be the same copy of the state
                     }
                 }
             }
-        }
+        // }
         
 
         return actionsList;
     }
 
-    public State h_minimax(State state){
-        return state;
+    public Tuple alphabeta(State state, int depth, int alpha, int beta, boolean maximizingPlayer){
+        if(depth == 0 || terminalTest(state)){
+            return new Tuple(utility(state), state);
+        }
+        if(maximizingPlayer){
+            int value = Integer.MIN_VALUE;
+            ArrayList<State> actionsList = getActions(state);
+            State aiMoveState = actionsList.get(0);
+
+            for(State action : actionsList){
+                int result = alphabeta(action, depth - 1, alpha, beta, false).getValue();
+                if(result > value){
+                    value = result;
+                    aiMoveState = action;
+                }
+                if(value > beta){
+                    break;
+                }
+                alpha = Integer.max(alpha, value);
+            }
+            return new Tuple(value, aiMoveState);
+        } else {
+            int value = Integer.MAX_VALUE;
+            ArrayList<State> actionsList = getActions(state);
+            State aiMoveState = actionsList.get(0);
+
+            for(State action : actionsList){
+                int result = alphabeta(action, depth - 1, alpha, beta, true).getValue();
+                if(result < value){
+                    value = result;
+                    aiMoveState = action;
+                }
+                if(value < alpha){
+                    break;
+                }
+                beta = Integer.max(beta, value);
+            }
+            return new Tuple(value, aiMoveState);
+        }
     }
+
 
     /*
      * param: 

@@ -214,11 +214,11 @@ public class State
             {
                 if (this.getBoardAtPos(row, col) == 'X')
                 {
-                    xCount++;
+                    xCount+=1;
                 }
                 else if (this.getBoardAtPos(row, col) == 'O')
                 {
-                    oCount++;
+                    oCount+=1;
                 }
             }
         }
