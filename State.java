@@ -4,6 +4,13 @@ public class State
                                                    {' ', 'O', 'X', ' '}, 
                                                    {' ', 'X', 'O', ' '}, 
                                                    {' ', ' ', ' ', ' '}};
+    
+    private static final char[][] EMPTY_6_BOARD = {{' ', ' ', ' ', ' ', ' ', ' '}, 
+                                                   {' ', ' ', ' ', ' ', ' ', ' '},
+                                                   {' ', ' ', 'O', 'X', ' ', ' '}, 
+                                                   {' ', ' ', 'X', 'O', ' ', ' '}, 
+                                                   {' ', ' ', ' ', ' ', ' ', ' '},
+                                                   {' ', ' ', ' ', ' ', ' ', ' '}};
 
     private char[][] board;
     private Player player;
@@ -12,10 +19,6 @@ public class State
     private int oPiecesCount;
 
 
-    // public State(State clonedState)
-    // {
-    //     this(clonedState.getPlayer(), clonedState.getBoard(), clonedState.getBoardSize());
-    // }
 
     /*
      * Constructor for creating the first state (an empty board)
@@ -28,10 +31,16 @@ public class State
         this.player = player;
         
         this.boardSize = boardSize;
+        this.board = new char[boardSize][boardSize];
+
+
         if (boardSize == 4)
         {
-            this.board = new char[4][4];
             setBoard(EMPTY_4_BOARD);
+        }
+        else if (boardSize == 6)
+        {
+            setBoard(EMPTY_6_BOARD);
         }
         else // Need to update this to support other size boards
         {
@@ -50,7 +59,7 @@ public class State
     public State(Player player, char[][] board, int boardSize)
     {
         this.player = player;
-        this.board = new char[4][4];
+        this.board = new char[boardSize][boardSize];
         this.boardSize = boardSize;
         for (int row = 0; row < boardSize; row++)
         {

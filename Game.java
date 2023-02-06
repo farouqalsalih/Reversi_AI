@@ -27,28 +27,71 @@ public class Game {
         Description:
             Checks if a move (row, col) is possible in the game state board 
     */
-    public boolean check(int x, int y, State currentState){
+    public ArrayList<Integer> check(int x, int y, State currentState){
+        ArrayList<Integer> functions = new ArrayList<Integer>();
         int size = currentState.getBoardSize();
-        
+  
         //checks if number is valid
         if(x >= size || y >= size || x < 0 || y < 0){
-            return false;
+            return functions;
         }
 
         //checks if a piece has already been placed there
         if(currentState.getBoard()[x][y] != ' '){
-            return false;
+            return functions;
         }
 
         //checks if you can place, and if so, flips boolean canPlace to true
         char opponent = currentState.getPlayer().getSymbol() == 'X' ? 'O' : 'X';
-        
+
+        /*
+         * 0 = flipVerticalUp
+         * 1 = flipVerticalDown
+         * 2 = flipHorizontalLeft
+         * 3 = flipHorizontalRight
+         * 4 = flipDiagonalDownRight
+         * 5 = flipDiagonalDownLeft
+         * 6 = flipDiagonalUpLeft
+         * 7 = flipDiagonalUpRight
+         */
+        if(flipVerticalUp(x, y, size, opponent, false, currentState)){
+            functions.add(0);
+        }
+        if(flipVerticalDown(x, y, size, opponent, false, currentState)){
+            functions.add(1);
+        }
+        if(flipHorizontalLeft(x, y, size, opponent, false, currentState)){
+            functions.add(2);
+        }
+        if(flipHorizontalRight(x, y, size, opponent, false, currentState)){
+            functions.add(3);
+        }
+        if(flipDiagonalDownRight(x, y, size, opponent, false, currentState)){
+            functions.add(4);
+        }
+        if(flipDiagonalDownLeft(x, y, size, opponent, false, currentState)){
+            functions.add(5);
+        }
+        if(flipDiagonalUpLeft(x, y, size, opponent, false, currentState)){
+            functions.add(6);
+        }
+        if(flipDiagonalUpRight(x, y, size, opponent, false, currentState)){
+            functions.add(7);
+        }
+
+        return functions;
+    }
+
+    public boolean flipVerticalUp(int x, int y, int size, char opponent, boolean flip, State currentState){
         boolean isPossible = false;
 
         for(int i = x - 1; i >= 0; i--){
             if(currentState.getBoard()[i][y] == ' '){
                 break;
             } else if(currentState.getBoard()[i][y] == opponent){
+                if(flip){
+                    currentState.setBoardAtPos(opponent == 'X' ? 'O' : 'X', i, y);
+                }
                 isPossible = true;
             } else {
                 if(isPossible){
@@ -59,12 +102,19 @@ public class Game {
             }
         }
 
-        isPossible = false;
-        //feels like boilerplatey code, perhaps we could simplify
+        return false;
+    }
+
+    public boolean flipVerticalDown(int x, int y, int size, char opponent, boolean flip, State currentState){
+        boolean isPossible = false;
+
         for(int i = x + 1; i < size; i++){
             if(currentState.getBoard()[i][y] == ' '){
                 break;
             } else if(currentState.getBoard()[i][y] == opponent){
+                if(flip){
+                    currentState.setBoardAtPos(opponent == 'X' ? 'O' : 'X', i, y);
+                }
                 isPossible = true;
             } else {
                 if(isPossible){
@@ -75,12 +125,19 @@ public class Game {
             }
         }
 
-        isPossible = false;
+        return false;
+    }
+
+    public boolean flipHorizontalLeft(int x, int y, int size, char opponent, boolean flip, State currentState){
+        boolean isPossible = false;
 
         for(int i = y - 1; i >= 0; i--){
             if(currentState.getBoard()[x][i] == ' '){
                 break;
             } else if(currentState.getBoard()[x][i] == opponent){
+                if(flip){
+                    currentState.setBoardAtPos(opponent == 'X' ? 'O' : 'X', x, i); // error
+                }
                 isPossible = true;
             } else {
                 if(isPossible){
@@ -91,12 +148,19 @@ public class Game {
             }
         }
 
-        isPossible = false;
+        return false;
+    }
+
+    public boolean flipHorizontalRight(int x, int y, int size, char opponent, boolean flip, State currentState){
+        boolean isPossible = false;
 
         for(int i = y + 1; i < size; i++){
             if(currentState.getBoard()[x][i] == ' '){
                 break;
             } else if(currentState.getBoard()[x][i] == opponent){
+                if(flip){
+                    currentState.setBoardAtPos(opponent == 'X' ? 'O' : 'X', x, i);
+                }
                 isPossible = true;
             } else {
                 if(isPossible){
@@ -107,13 +171,20 @@ public class Game {
             }
         }
 
-        isPossible = false;
+        return false;
+    }
+
+    public boolean flipDiagonalDownRight(int x, int y, int size, char opponent, boolean flip, State currentState){
+        boolean isPossible = false;
 
         int j = y + 1;
         for(int i = x + 1; i < size && j < size; i++, j++){
             if(currentState.getBoard()[i][j] == ' '){
                 break;
             } else if(currentState.getBoard()[i][j] == opponent){
+                if(flip){
+                    currentState.setBoardAtPos(opponent == 'X' ? 'O' : 'X', i, j);
+                }
                 isPossible = true;
             } else {
                 if(isPossible){
@@ -124,47 +195,68 @@ public class Game {
             }
         }
 
-        isPossible = false;
+        return false;
+    }
 
-        j = y - 1;
-        for(int i = x - 1; i >= 0 && j >= 0; i--, j--){
-            if(currentState.getBoard()[i][j] == ' '){
-                break;
-            } else if(currentState.getBoard()[i][j] == opponent){
-                isPossible = true;
-            } else {
-                if(isPossible){
-                    return true;
-                } else {
-                    break;
-                }
-            }
-        }
+    public boolean flipDiagonalDownLeft(int x, int y, int size, char opponent, boolean flip, State currentState){
+        boolean isPossible = false;
 
-        isPossible = false;
-
-        j = y + 1;
-        for(int i = x - 1; i >= 0 && j < size; i--, j++){
-            if(currentState.getBoard()[i][j] == ' '){
-                break;
-            } else if(currentState.getBoard()[i][j] == opponent){
-                isPossible = true;
-            } else {
-                if(isPossible){
-                    return true;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        isPossible = false;
-
-        j = y - 1;
+        int j = y - 1;
         for(int i = x + 1; i < size && j >= 0; i++, j--){
             if(currentState.getBoard()[i][j] == ' '){
                 break;
             } else if(currentState.getBoard()[i][j] == opponent){
+                if(flip){
+                    currentState.setBoardAtPos(opponent == 'X' ? 'O' : 'X', i, j);
+                }
+                isPossible = true;
+            } else {
+                if(isPossible){
+                    return true;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean flipDiagonalUpLeft(int x, int y, int size, char opponent, boolean flip, State currentState){
+        boolean isPossible = false;
+
+        int j = y - 1;
+        for(int i = x - 1; i >= 0 && j >= 0; i--, j--){
+            if(currentState.getBoard()[i][j] == ' '){
+                break;
+            } else if(currentState.getBoard()[i][j] == opponent){
+                if(flip){
+                    currentState.setBoardAtPos(opponent == 'X' ? 'O' : 'X', i, j);
+                }
+                isPossible = true;
+            } else {
+                if(isPossible){
+                    return true;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean flipDiagonalUpRight(int x, int y, int size, char opponent, boolean flip, State currentState){
+        boolean isPossible = false;
+
+        int j = y + 1;
+        for(int i = x - 1; i >= 0 && j < size; i--, j++){
+            if(currentState.getBoard()[i][j] == ' '){
+                break;
+            } else if(currentState.getBoard()[i][j] == opponent){
+                if(flip){
+                    currentState.setBoardAtPos(opponent == 'X' ? 'O' : 'X', i, j);
+                }
                 isPossible = true;
             } else {
                 if(isPossible){
@@ -187,11 +279,54 @@ public class Game {
         Returns a boolean value if move is placed
     */
     public boolean move(int x, int y){
-        if(check(x, y, this.currentState)){
+        //
+        
+        ArrayList<Integer> functions = check(x, y, this.currentState);
+        if(functions.size() > 0){
             this.currentState.setBoardAtPos(this.currentState.getPlayer().getSymbol(), x, y);
+            
+            char opponent = this.currentState.getPlayer().getSymbol() == 'X' ? 'O' : 'X';
+            /*
+             * 0 = flipVerticalUp
+             * 1 = flipVerticalDown
+             * 2 = flipHorizontalLeft
+             * 3 = flipHorizontalRight
+             * 4 = flipDiagonalDownRight
+             * 5 = flipDiagonalDownLeft
+             * 6 = flipDiagonalUpLeft
+             * 7 = flipDiagonalUpRight
+             */
+            for(Integer function : functions){
+                if(function == 0){
+                    flipVerticalUp(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
+                }
+                else if(function == 1){
+                    flipVerticalDown(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
+                }
+                else if(function == 2){
+                    flipHorizontalLeft(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
+                }
+                else if(function == 3){
+                    flipHorizontalRight(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
+                }
+                else if(function == 4){
+                    flipDiagonalDownRight(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
+                }
+                else if(function == 5){
+                    flipDiagonalDownLeft(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
+                }
+                else if(function == 6){
+                     flipDiagonalUpLeft(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);   
+                }
+                else if(function == 7){
+                    flipDiagonalUpRight(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);                    
+                }
+            }
+
             this.currentState.setPlayer(bot);
             return true;
         }
+        
         //flip all the tiles
         //AI does move
         //flip all tiles from AI move
@@ -199,27 +334,30 @@ public class Game {
         return false;
     }
 
-    public State move(int x, int y, State state){
-        System.out.println("Here");
-        state.printBoard();
-        State returnState = new State(state.getPlayer(), state.getBoard(), state.getBoardSize());
-        returnState.printBoard();
-        if(check(x, y, returnState)){
-            returnState.setBoardAtPos(returnState.getPlayer().getSymbol(), x, y);
-            if (returnState.getPlayer().getSymbol() == 'X')
-            {
+    // public State move(int x, int y, State state){
+    //     System.out.println("Here");
+    //     state.printBoard();
+    //     State returnState = new State(state.getPlayer(), state.getBoard(), state.getBoardSize());
+    //     returnState.printBoard();
+    //     if(check(x, y, returnState)){
+    //         returnState.setBoardAtPos(returnState.getPlayer().getSymbol(), x, y);
+            
+    //         //do flips here
+
+    //         if (returnState.getPlayer().getSymbol() == 'X')
+    //         {
                 
-                returnState.setPlayer(bot);
-            }
-            else
-            {
-                returnState.setPlayer(user);
-            }
-            return returnState;
-        }
+    //             returnState.setPlayer(bot);
+    //         }
+    //         else
+    //         {
+    //             returnState.setPlayer(user);
+    //         }
+    //         return returnState;
+    //     }
         
-        return null;
-    }
+    //     return null;
+    // }
 
     /*
      * param:
@@ -233,10 +371,9 @@ public class Game {
         Scanner scanner = new Scanner(System.in);
         
         
-        
+        currentState.printBoard();
         while (!terminalTest(currentState))
         {
-            currentState.printBoard();
             System.out.print("Enter your move in row-col format like 11 to represent b1");
             row = Integer.parseInt(scanner.nextLine());
             col = Integer.parseInt(scanner.nextLine());
@@ -273,7 +410,7 @@ public class Game {
         {
             for (int col = 0; col < state.getBoardSize(); col++)
             {
-                if (check(row, col, state)) // If there is ever a valid move, return false
+                if (check(row, col, state).size() > 0) // If there is ever a valid move, return false
                 {
                     return false;
                 }
@@ -342,10 +479,41 @@ public class Game {
             {
                 for (int col = 0; col < state.getBoardSize(); col++)
                 {
-                    if (check(row, col, state))
+                    ArrayList<Integer> functions = check(row, col, state);
+                    if (functions.size() > 0)
                     {
-                        State s = new State(user, state.getBoard(), state.getBoardSize());
-                        s.setBoardAtPos('O', row, col);
+                        State s = new State(bot, state.getBoard(), state.getBoardSize());
+                        s.setBoardAtPos(bot.getSymbol(), row, col);
+                        char opponent = s.getPlayer().getSymbol() == 'X' ? 'O' : 'X';
+
+                        for(Integer function : functions){
+                            if(function == 0){
+                                flipVerticalUp(row, col, s.getBoardSize(), opponent, true, s);
+                            }
+                            else if(function == 1){
+                                flipVerticalDown(row, col, s.getBoardSize(), opponent, true, s);
+                            }
+                            else if(function == 2){
+                                flipHorizontalLeft(row, col, s.getBoardSize(), opponent, true, s);
+                            }
+                            else if(function == 3){
+                                flipHorizontalRight(row, col, s.getBoardSize(), opponent, true, s);
+                            }
+                            else if(function == 4){
+                                flipDiagonalDownRight(row, col, s.getBoardSize(), opponent, true, s);
+                            }
+                            else if(function == 5){
+                                flipDiagonalDownLeft(row, col, s.getBoardSize(), opponent, true, s);
+                            }
+                            else if(function == 6){
+                                flipDiagonalUpLeft(row, col, s.getBoardSize(), opponent, true, s);   
+                            }
+                            else if(function == 7){
+                                flipDiagonalUpRight(row, col, s.getBoardSize(), opponent, true, s);                    
+                            }
+                        }
+
+                        s.setPlayer(user);
                         actionsList.add(s);
                         //there will be an error here since you're not changing the state, it will be the same copy of the state
                     }
@@ -369,8 +537,8 @@ public class Game {
     {
         ArrayList<State> actionsList = getActions(state);
         
-        int maxMoveValue = -1;
-        State aiMoveState = state;
+        int maxMoveValue = Integer.MIN_VALUE;
+        State aiMoveState = actionsList.get(0);
         for (State action : actionsList)
         {
             int moveValue = minimizeValue(action);
@@ -379,6 +547,14 @@ public class Game {
                 maxMoveValue = moveValue;
                 aiMoveState = action;
             }
+        }
+        if (aiMoveState.equals(state))
+        {
+            System.out.println("No good move was found");
+        }
+        else
+        {
+            System.out.println("We found a good move");
         }
         return aiMoveState;
     }
