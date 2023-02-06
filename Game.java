@@ -348,30 +348,7 @@ public class Game {
         return false;
     }
 
-    // public State move(int x, int y, State state){
-    //     System.out.println("Here");
-    //     state.printBoard();
-    //     State returnState = new State(state.getPlayer(), state.getBoard(), state.getBoardSize());
-    //     returnState.printBoard();
-    //     if(check(x, y, returnState)){
-    //         returnState.setBoardAtPos(returnState.getPlayer().getSymbol(), x, y);
-            
-    //         //do flips here
 
-    //         if (returnState.getPlayer().getSymbol() == 'X')
-    //         {
-                
-    //             returnState.setPlayer(bot);
-    //         }
-    //         else
-    //         {
-    //             returnState.setPlayer(user);
-    //         }
-    //         return returnState;
-    //     }
-        
-    //     return null;
-    // }
 
     public int checkNumber(Scanner scanner){
         //Scanner scanner = new Scanner(System.in);
@@ -474,17 +451,6 @@ public class Game {
         // the game is over, and return true
         return true; 
     }
-
-
-    /*
-     *******************************
-     *            NOTE:            *
-     *******************************
-     * I think we should probably have the utility ALWAYS return 1 if human 
-     * player wins, and -1 if ai player wins. As it is currently, it asks for
-     * which player you check, and will actually return a positive value for
-     * the ai player if they are the argument
-     */
 
 
     /*
