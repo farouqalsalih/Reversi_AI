@@ -11,6 +11,15 @@ public class State
                                                    {' ', ' ', 'X', 'O', ' ', ' '}, 
                                                    {' ', ' ', ' ', ' ', ' ', ' '},
                                                    {' ', ' ', ' ', ' ', ' ', ' '}};
+    
+    private static final char[][] EMPTY_8_BOARD = {{' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                                                   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}, 
+                                                   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                                                   {' ', ' ', ' ', 'O', 'X', ' ', ' ', ' '}, 
+                                                   {' ', ' ', ' ', 'X', 'O', ' ', ' ', ' '}, 
+                                                   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                                                   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+                                                   {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}};
 
     private char[][] board;
     private Player player;
@@ -44,7 +53,7 @@ public class State
         }
         else if (boardSize == 8)
         {
-            //do 8 board
+            setBoard(EMPTY_8_BOARD);
         }
         else // Need to update this to support other size boards
         {

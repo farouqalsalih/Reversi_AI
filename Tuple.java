@@ -1,13 +1,13 @@
 public class Tuple {
-    private int value;
+    private float value;
     private State action;
 
-    public Tuple(int value, State action){
+    public Tuple(float value, State action){
         this.value = value;
         this.action = action;
     }
 
-    public int getValue(){
+    public float getValue(){
         return this.value;
     }
 

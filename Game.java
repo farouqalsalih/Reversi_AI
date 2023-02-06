@@ -82,6 +82,45 @@ public class Game {
         return functions;
     }
 
+    public void flip(int row, int col, State s, char opponent, ArrayList<Integer> functions){
+        /*
+            * 0 = flipVerticalUp
+            * 1 = flipVerticalDown
+            * 2 = flipHorizontalLeft
+            * 3 = flipHorizontalRight
+            * 4 = flipDiagonalDownRight
+            * 5 = flipDiagonalDownLeft
+            * 6 = flipDiagonalUpLeft
+            * 7 = flipDiagonalUpRight
+            */
+        for(Integer function : functions){
+            if(function == 0){
+                flipVerticalUp(row, col, s.getBoardSize(), opponent, true, s);
+            }
+            else if(function == 1){
+                flipVerticalDown(row, col, s.getBoardSize(), opponent, true, s);
+            }
+            else if(function == 2){
+                flipHorizontalLeft(row, col, s.getBoardSize(), opponent, true, s);
+            }
+            else if(function == 3){
+                flipHorizontalRight(row, col, s.getBoardSize(), opponent, true, s);
+            }
+            else if(function == 4){
+                flipDiagonalDownRight(row, col, s.getBoardSize(), opponent, true, s);
+            }
+            else if(function == 5){
+                flipDiagonalDownLeft(row, col, s.getBoardSize(), opponent, true, s);
+            }
+            else if(function == 6){
+                flipDiagonalUpLeft(row, col, s.getBoardSize(), opponent, true, s);   
+            }
+            else if(function == 7){
+                flipDiagonalUpRight(row, col, s.getBoardSize(), opponent, true, s);                    
+            }
+        }
+    }
+
     public boolean flipVerticalUp(int x, int y, int size, char opponent, boolean flip, State currentState){
         boolean isPossible = false;
 
@@ -296,34 +335,9 @@ public class Game {
              * 6 = flipDiagonalUpLeft
              * 7 = flipDiagonalUpRight
              */
-            for(Integer function : functions){
-                if(function == 0){
-                    flipVerticalUp(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
-                }
-                else if(function == 1){
-                    flipVerticalDown(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
-                }
-                else if(function == 2){
-                    flipHorizontalLeft(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
-                }
-                else if(function == 3){
-                    flipHorizontalRight(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
-                }
-                else if(function == 4){
-                    flipDiagonalDownRight(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
-                }
-                else if(function == 5){
-                    flipDiagonalDownLeft(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);
-                }
-                else if(function == 6){
-                     flipDiagonalUpLeft(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);   
-                }
-                else if(function == 7){
-                    flipDiagonalUpRight(x, y, this.currentState.getBoardSize(), opponent, true, this.currentState);                    
-                }
-            }
 
-            this.currentState.setPlayer(bot);
+            flip(x, y, this.currentState, opponent, functions);
+
             return true;
         }
         
@@ -359,36 +373,61 @@ public class Game {
     //     return null;
     // }
 
+    public int checkNumber(Scanner scanner){
+        //Scanner scanner = new Scanner(System.in);
+        String value = scanner.nextLine();
+        int valueInt;
+        while(true){
+            try {
+                valueInt = Integer.parseInt(value);
+                break;
+            } catch (Exception e){
+                System.out.println("Enter a number");
+                value = scanner.nextLine();
+            }
+        }
+        
+        return valueInt;
+    }
+
     /*
      * param:
      *     none
      * Game loop function
      */
-    public void playGame()
+    public void playGame(Scanner scanner)
     {
         int row;
         int col;
-        Scanner scanner = new Scanner(System.in);
+        //Scanner scanner = new Scanner(System.in);
         
         
         currentState.printBoard();
         while (!terminalTest(currentState))
         {
             System.out.println("\nEnter your move in row-col format like 11 to represent b1");
-            row = Integer.parseInt(scanner.nextLine());
-            col = Integer.parseInt(scanner.nextLine());
-            System.out.println(move(row, col));
+            
+            while(true){
+                row = checkNumber(scanner);
+                col = checkNumber(scanner);
+                if(move(row, col)){
+                    break;
+                } else {
+                    System.out.println("Invalid move");
+                }
+            }
+            
             currentState.setPlayer(bot);
             currentState.printBoard();
-            this.currentState = alphabeta(currentState, 20, Integer.MIN_VALUE, Integer.MAX_VALUE, true).getAction();
+            this.currentState = alphabeta(currentState, 20, Float.MIN_VALUE, Float.MAX_VALUE, true).getAction();
             currentState.printBoard();
             currentState.setPlayer(user);
 
         }
 
-        System.out.println("X: " + this.currentState.getXPiecesCount() + " " + "O: " + this.currentState.getOPiecesCount());
+        System.out.println("Score:\n"+ "X: " + this.currentState.getXPiecesCount() + " " + "O: " + this.currentState.getOPiecesCount());
 
-        scanner.close();
+        //scanner.close();
     }
 
     /*
@@ -466,6 +505,18 @@ public class Game {
         }
     }
 
+    /*
+     * Basically a utility function that is used when we want the heuristic at
+     * our specified depth
+     */
+    public float heuristicFunction(State state)
+    {
+        state.countPieces();
+        int xCount = state.getXPiecesCount();
+        int oCount = state.getOPiecesCount();
+        return ((float)oCount - (float)xCount) / (float)state.getTotalPieces();
+ 
+    }
 
     /*
      * param:
@@ -489,33 +540,7 @@ public class Game {
                         s.setBoardAtPos(bot.getSymbol(), row, col);
                         char opponent = s.getPlayer().getSymbol() == 'X' ? 'O' : 'X';
 
-                        for(Integer function : functions){
-                            if(function == 0){
-                                flipVerticalUp(row, col, s.getBoardSize(), opponent, true, s);
-                            }
-                            else if(function == 1){
-                                flipVerticalDown(row, col, s.getBoardSize(), opponent, true, s);
-                            }
-                            else if(function == 2){
-                                flipHorizontalLeft(row, col, s.getBoardSize(), opponent, true, s);
-                            }
-                            else if(function == 3){
-                                flipHorizontalRight(row, col, s.getBoardSize(), opponent, true, s);
-                            }
-                            else if(function == 4){
-                                flipDiagonalDownRight(row, col, s.getBoardSize(), opponent, true, s);
-                            }
-                            else if(function == 5){
-                                flipDiagonalDownLeft(row, col, s.getBoardSize(), opponent, true, s);
-                            }
-                            else if(function == 6){
-                                flipDiagonalUpLeft(row, col, s.getBoardSize(), opponent, true, s);   
-                            }
-                            else if(function == 7){
-                                flipDiagonalUpRight(row, col, s.getBoardSize(), opponent, true, s);                    
-                            }
-                        }
-
+                        flip(row, col, s, opponent, functions);
                         // s.setPlayer(user);
                         actionsList.add(s);
                         //there will be an error here since you're not changing the state, it will be the same copy of the state
@@ -528,17 +553,17 @@ public class Game {
         return actionsList;
     }
 
-    public Tuple alphabeta(State state, int depth, int alpha, int beta, boolean maximizingPlayer){
+    public Tuple alphabeta(State state, int depth, float alpha, float beta, boolean maximizingPlayer){
         if(depth == 0 || terminalTest(state)){
-            return new Tuple(utility(state), state);
+            return new Tuple(heuristicFunction(state), state);
         }
         if(maximizingPlayer){
-            int value = Integer.MIN_VALUE;
+            float value = Float.MIN_VALUE;
             ArrayList<State> actionsList = getActions(state);
             State aiMoveState = actionsList.get(0);
 
             for(State action : actionsList){
-                int result = alphabeta(action, depth - 1, alpha, beta, false).getValue();
+                float result = alphabeta(action, depth - 1, alpha, beta, false).getValue();
                 if(result > value){
                     value = result;
                     aiMoveState = action;
@@ -546,16 +571,16 @@ public class Game {
                 if(value > beta){
                     break;
                 }
-                alpha = Integer.max(alpha, value);
+                alpha = Math.max(alpha, value);
             }
             return new Tuple(value, aiMoveState);
         } else {
-            int value = Integer.MAX_VALUE;
+            float value = Float.MAX_VALUE;
             ArrayList<State> actionsList = getActions(state);
             State aiMoveState = actionsList.get(0);
 
             for(State action : actionsList){
-                int result = alphabeta(action, depth - 1, alpha, beta, true).getValue();
+                float result = alphabeta(action, depth - 1, alpha, beta, true).getValue();
                 if(result < value){
                     value = result;
                     aiMoveState = action;
@@ -563,7 +588,7 @@ public class Game {
                 if(value < alpha){
                     break;
                 }
-                beta = Integer.max(beta, value);
+                beta = Math.max(beta, value);
             }
             return new Tuple(value, aiMoveState);
         }
