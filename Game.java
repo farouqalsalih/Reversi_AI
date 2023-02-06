@@ -395,7 +395,7 @@ public class Game {
      *     none
      * Game loop function
      */
-    public void playGame(Scanner scanner)
+    public void playGame(Scanner scanner, int gameChoiceInt)
     {
         int row;
         int col;
@@ -419,7 +419,18 @@ public class Game {
             
             currentState.setPlayer(bot);
             currentState.printBoard();
-            this.currentState = alphabeta(currentState, 20, Float.MIN_VALUE, Float.MAX_VALUE, true).getAction();
+            if (gameChoiceInt == 4) // Game size of 4, runs minimax perfectly
+            {
+                this.currentState = minimax(currentState);
+            }
+            else if (gameChoiceInt == 6) // Game size of 6, runs alpha beta pruning with 1000 depth
+            {
+                this.currentState = alphabeta(currentState, 1000, Float.MIN_VALUE, Float.MAX_VALUE, true).getAction();
+            }
+            else if (gameChoiceInt == 8) // Game size of 8, a/b pruning with depth 20
+            {
+                this.currentState = alphabeta(currentState, 20, Float.MIN_VALUE, Float.MAX_VALUE, true).getAction();
+            }
             currentState.printBoard();
             currentState.setPlayer(user);
 

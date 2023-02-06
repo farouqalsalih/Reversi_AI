@@ -14,7 +14,7 @@ public class ReversiGame
             System.out.println("\n4. Small 4x4 Reversi (minimax)\n6. Standard 6x6 Reversi (alpha-beta pruning)\n8. Standard 8x8 Reversi (alpha-beta pruning and heuristic at depth 20)\n");
             System.out.print("Enter the number of your choice (4, 6, or 8): ");
             String gameChoice = scanner.nextLine();
-            int gameChoiceInt = 4;
+            int gameChoiceInt;
 
             while(true){
                 if(!gameChoice.equals("4") && !gameChoice.equals("6") && !gameChoice.equals("8")){
@@ -34,7 +34,7 @@ public class ReversiGame
             Player aiPlayer = new Player("Bot", 'O');
             State initialGameState = new State(userPlayer, gameChoiceInt);
             Game game = new Game(userPlayer, aiPlayer, initialGameState);
-            game.playGame(scanner);
+            game.playGame(scanner, gameChoiceInt);
 
             System.out.println("Type 'quit' if you want to quit, else type anything/enter");
             if(scanner.nextLine().equals("quit")){
