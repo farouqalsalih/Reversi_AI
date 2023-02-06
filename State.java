@@ -42,6 +42,10 @@ public class State
         {
             setBoard(EMPTY_6_BOARD);
         }
+        else if (boardSize == 8)
+        {
+            //do 8 board
+        }
         else // Need to update this to support other size boards
         {
             System.out.println("You entered the wrong boardsize");
