@@ -374,7 +374,7 @@ public class Game {
         currentState.printBoard();
         while (!terminalTest(currentState))
         {
-            System.out.print("Enter your move in row-col format like 11 to represent b1");
+            System.out.println("\nEnter your move in row-col format like 11 to represent b1");
             row = Integer.parseInt(scanner.nextLine());
             col = Integer.parseInt(scanner.nextLine());
             System.out.println(move(row, col));
